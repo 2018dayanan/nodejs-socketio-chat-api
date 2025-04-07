@@ -45,3 +45,41 @@ export const Register = async (req, res) => {
         })
     }
 }
+// Login
+export const Login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: `${!email ? 'Email' : !password ? 'Password' : ""} is required!`
+            })
+        }
+        const exitUser = await UserModel.findOne({ email });
+        if (!exitUser) {
+            return res.status(404).json(
+                {
+                    status: false,
+                    message: "User Not Found!"
+                })
+        }
+        const isMatch = await bcrypt.compare(password, exitUser.password);
+        if (!isMatch) {
+            return res.status(400).json({
+                status: false,
+                message: "Invalid Password"
+            })
+        }
+        return res.status(200).json({
+            status: true,
+            message: "User login successfully!",
+            user: exitUser
+        })
+    } catch (e) {
+        console.log("Error From User Login", e)
+        return res.status(500).json({
+            status: false,
+            message: "Internal Server Error!"
+        })
+    }
+}
