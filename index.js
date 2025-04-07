@@ -6,6 +6,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
 DbCon();
+app.use(express.json());
 app.use("/api/auth", AuthRoutes);
 
 app.listen(PORT, () => { console.log("Server is running on port", PORT) });
