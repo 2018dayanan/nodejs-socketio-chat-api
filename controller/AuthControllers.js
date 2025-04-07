@@ -83,3 +83,27 @@ export const Login = async (req, res) => {
         })
     }
 }
+// Get Users
+export const GetUsers = async (req, res) => {
+    try {
+        const getUsers = await UserModel.find()
+        if (!getUsers) {
+            return res.status(404).json({
+                success: false,
+                message: "User Not Found!"
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            message: "Users fetched successfully!",
+            user: getUsers
+        })
+
+    } catch (e) {
+        console.log("Error", e);
+        return res.status(500).json({
+            status: false,
+            message: "Internal server error!"
+        })
+    }
+}
