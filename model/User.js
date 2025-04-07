@@ -4,7 +4,6 @@ const UserSchema = new mongoose.Schema({
     name: {
         type: String,
         require: true,
-        unique: true
     },
     email: {
         type: String,
@@ -20,5 +19,5 @@ const UserSchema = new mongoose.Schema({
         default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuNhTZJTtkR6b-ADMhmzPvVwaLuLdz273wvQ&s"
     }
 }, { timestamps: true })
-const UserModel = mongoose.model("User",UserSchema);
+const UserModel = mongoose.model("User", UserSchema);
 export default UserModel;

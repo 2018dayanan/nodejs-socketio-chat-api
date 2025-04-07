@@ -3,13 +3,17 @@ import bcrypt from "bcrypt";
 export const Register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
-        if (!name || !email || !password) {
+        if (!name || !email || !password || !req.file) {
 
             return res.status(400).json({
                 success: false,
-                message: `${!name ? 'Name' : !email ? 'Email' : !password ? 'Password' : ""} is required!`
+                message: `${!name ? 'Name' : !email ? 'Email' : !password ? 'Password' : !req.file ? 'Profile picture' : ""} is required!`
             })
         }
+        const BaseUrl = `${req.protocol}://${req.get("host")}`
+        console.log("Base url", BaseUrl)
+        const imagePath = `${BaseUrl}/images/${req.file.filename}`
+        console.log(imagePath);
         const exitUser = await UserModel.findOne({ email });
         if (exitUser) {
             return res.status(400).json(
@@ -22,7 +26,10 @@ export const Register = async (req, res) => {
         // const user = await UserModel.create({ name, email, password })
         // second method 
         const user = await UserModel({
-            name, email, password: hashPassword
+            name,
+            email,
+            password: hashPassword,
+            profile: imagePath
         })
         await user.save();
         return res.status(201).json({

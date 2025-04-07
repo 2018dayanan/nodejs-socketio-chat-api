@@ -49,3 +49,6 @@ docker-compose.override.yml
 # Testing
 jest-cache/
 .nyc_output/
+
+/public/images/*
+!/public/images/.gitkeep
