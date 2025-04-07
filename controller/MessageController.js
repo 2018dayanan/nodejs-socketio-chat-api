@@ -63,3 +63,48 @@ export const CreateMessage = async (req, res) => {
         });
     }
 };
+// Get Messages
+export const GetMessage = async (req, res) => {
+    try {
+        const { senderId, receiverId } = req.body;
+        if (!senderId || !receiverId) {
+            return res.status(400).json({
+                success: false,
+                message: `${!senderId ? "Sender Id" : !receiverId ? "Receiver Id" : ""} is required.`
+            })
+        }
+        const conversation = await conversationModel.findOne({
+            members: {
+                $all: [senderId, receiverId],
+                $size: 2
+            }
+        }).populate("messages");
+        if (!conversation) {
+            const newConversation = new conversationModel({
+
+                members: [senderId, receiverId],
+                message: []
+            })
+            await newConversation.save()
+            return res.status(200).json({
+                success: true,
+                message: "Conversation Created",
+                data: newConversation
+            })
+        }
+
+        return res.status(200).json({
+            status: true,
+            message: "Successfully fetched message!",
+            data: conversation.messages
+        })
+    } catch (e) {
+        console.log("Error: ", e);
+        return res.status(500).json({
+            status: false,
+            message: "Internal Server Error",
+        })
+
+    }
+
+}
